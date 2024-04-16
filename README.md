@@ -39,3 +39,25 @@
 ```
 打开 Driver 的 stdout，里面打印了上传的日志.
 
+## 4. ESSTest
+
+```bash
+spark-submit  \
+ --master yarn \
+ --deploy-mode cluster \
+ --num-executors 700 \
+ --executor-cores 1 \
+ --conf spark.yarn.maxAppAttempts=1  \
+ --conf spark.driver.memory=8G \
+ --conf spark.shuffle.compress=false \
+ --conf spark.driver.memory=8G \
+ --class com.baidu.spark.utils.shuffle.ESSTest  \
+ ./spark-utils-1.0-SNAPSHOT.jar \
+ 7 104857600 10000
+```
+ESSTest 有3个参数：
+第 1 个参数是 mapPartitions, 执行 ShuffleMapTask 的 数量.
+第 2 个参数是 outputCountPerMapPartition, 每个 Map Task 输出的行数据的个数。
+第 3 个参数是 reducePartitions, 按照 key 进行 repartition 的个数。
+
+key 的类型是 long，value 的类型是长度为 1024 的随机数组。

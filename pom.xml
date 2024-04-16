@@ -76,45 +76,30 @@
         </dependency>
     </dependencies>
     <build>
-        <sourceDirectory>src/main/scala</sourceDirectory>
-        <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>compile</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <!-- see http://davidb.github.com/scala-maven-plugin -->
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <args>
-                                <arg>-dependencyfile</arg>
-                                <arg>${project.build.directory}/.scala_dependencies</arg>
-                            </args>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <groupId>org.scala-tools</groupId>
+            <artifactId>maven-scala-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>compile</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <jvmArgs>
+                    <jvmArg>-Xms64m</jvmArg>
+                    <jvmArg>-Xmx1024m</jvmArg>
+                </jvmArgs>
+                <sources>
+                    <source>src/main/scala</source>
+                    <source>src/main/java</source>
+                    <source>src/test/scala</source>
+                    <source>src/test/java</source>
+                </sources>
+            </configuration>
+        </plugin>
         </plugins>
     </build>
 </project>
