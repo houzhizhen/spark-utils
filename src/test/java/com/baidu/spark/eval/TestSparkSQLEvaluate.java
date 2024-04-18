@@ -21,6 +21,12 @@ public class TestSparkSQLEvaluate {
         assertEval("source a.sql", EvalStatus.NOT_EVAL);
     }
 
+    @Test
+    public void testSparkFunctionInWhere() {
+        String query = "select * from a where hash(c1) > 1";
+        assertEval(query, EvalStatus.SUCCESS);
+    }
+
     private EvalResult eval(String sql) {
         return new SparkSQLEvaluate().evaluate(sql);
     }

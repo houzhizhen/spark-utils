@@ -14,10 +14,10 @@ object TestSql {
     val fields = schemaString.split(" ")
       .map(fieldName => StructField(fieldName, IntegerType, nullable = true))
     val schema = StructType(fields)
-    val rowRDD = distData.map( i => Row(i))
+    val rowRDD = distData.map(i => Row(i))
     val idDF = spark.createDataFrame(rowRDD, schema)
     idDF.createOrReplaceTempView("t1")
-    spark.sql("select count(distinct c1) from t1").show()
+    spark.sql("select count(c1) from t1").show()
     idDF.show()
     idDF.printSchema()
 
