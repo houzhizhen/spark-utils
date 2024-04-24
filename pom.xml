@@ -15,6 +15,7 @@
         <scala.binary.version>2.12</scala.binary.version>
         <spark.version>3.5.0</spark.version>
         <hive.version>2.3.9</hive.version>
+        <hadoop.version>3.2.3</hadoop.version>
         <janino.version>3.1.9</janino.version>
         <log4j2.version>2.17.1</log4j2.version>
     </properties>
@@ -109,10 +110,37 @@
             <artifactId>log4j-core</artifactId>
             <version>${log4j2.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
+           <!--  <plugin>
+            <groupId>org.scala-tools</groupId>
+            <artifactId>maven-scala-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>compile</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <jvmArgs>
+                    <jvmArg>-Xms64m</jvmArg>
+                    <jvmArg>-Xmx1024m</jvmArg>
+                </jvmArgs>
+                <sources>
+                    <source>src/main/scala</source>
+                    <source>src/main/java</source>
+                    <source>src/test/scala</source>
+                    <source>src/test/java</source>
+                </sources>
+            </configuration>
+        </plugin> -->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -133,6 +161,29 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultImplementationEntries>
+                                false
+                            </addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>
+                                true
+                            </addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <!-- Must be on one line, otherwise the automatic
+                                 upgrade script cannot replace the version number -->
+                            <Implementation-Version>1.8.10.0</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>

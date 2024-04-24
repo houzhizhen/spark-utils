@@ -61,3 +61,45 @@ ESSTest 有3个参数：
 第 3 个参数是 reducePartitions, 按照 key 进行 repartition 的个数。
 
 key 的类型是 long，value 的类型是长度为 1024 的随机数组。
+
+## 5. FindRetryStages（查找重试的 spark stages）
+```bash
+spark-submit --master local\[1\] \
+  --class com.baidu.spark.history.FindRetryStages \
+  target/spark-utils-1.0-SNAPSHOT.jar \
+  --conf spark.history.server.address=http://localhost:8701 \
+  --conf spark.app.check.min.duration.ms=10 \
+  --conf minEndDate=2024-04-18T00:00:00Z \
+  --conf maxEndDate=2024-04-19T00:00:00Z
+```
+
+find-yesterday-retry-stages.sh 
+```bash
+#!/bin/bash
+export MONITOR_LOG_DIR=${MONITOR_LOG_DIR:-"/mnt/bmr/log/spark3/monitor"}
+export LOGFILE=${MONITOR_LOG_DIR}/`date +"%Y%m%d-%H%M%S"`-hive-metastore-monitor.log
+
+echo MONITOR_LOG_DIR=${MONITOR_LOG_DIR} >> ${LOGFILE}
+if [ ! -d ${MONITOR_LOG_DIR} ]; then
+  mkdir -p ${MONITOR_LOG_DIR}
+fi
+
+## delete obsolete logs
+DELETE_LOGFILE=`date -d "-30 day" +"%Y%m%d"`
+rm -rf ${MONITOR_LOG_DIR}/${DELETE_LOGFILE}*
+
+minEndDate=`date -d "-2 day" +"%Y-%m-%d"`T00:00:00Z
+maxEndDate=`date -d "-1 day" +"%Y-%m-%d"`T00:00:00Z
+spark-submit --master local\[1\] \
+  --class com.baidu.spark.history.FindRetryStages \
+  ./spark-utils-1.0-SNAPSHOT.jar \
+  --conf spark.history.server.address=http://bmr-master-4096a55-1:8701 \
+  --conf spark.app.check.min.duration.ms=600000 \
+  --conf minEndDate=${minEndDate} \
+  --conf maxEndDate=${maxEndDate} >> ${LOGFILE} 2>$1 
+
+``` 
+crontab 
+```bash
+30 6 * * * timeout 2h sh /xxx/find-yesterday-retry-stages.sh
+```
