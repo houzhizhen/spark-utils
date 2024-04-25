@@ -103,3 +103,54 @@ crontab
 ```bash
 30 6 * * * timeout 2h sh /xxx/find-yesterday-retry-stages.sh
 ```
+
+## 6. SQLTest
+```bash
+spark-submit --master local\[1\] \
+ --conf 'spark.driver.extraJavaOptions=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000' \
+ --class com.baidu.spark.sql.TestSql \
+./spark-utils-1.0-SNAPSHOT.jar 
+
+```
+
+## 7.  SparkSQLEvaluate
+incompatible-functions.txt 有两个不兼容函数，内容如下：
+```bash
+infunc1
+infunc2
+```
+测试 quit,exit,source 或者以 ！开头的命令
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=quit'
+```
+结果：`result:EvalResult(status=NOT_EVAL, diagnosticsnull)`
+
+* 测试set
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=set a=b'
+```
+打印 `SparkSQLEvaluate: result:EvalResult(status=SET, diagnosticsnull)`, 说明是一个 set.
+
+* 测试 add
+
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=add jar a.jar'
+```
+result:EvalResult(status=NOT_EVAL, diagnosticsnull)
+
+* 测试不能解析的SQL
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=selec c1 from t1'
+```

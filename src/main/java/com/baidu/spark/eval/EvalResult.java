@@ -19,4 +19,16 @@ public class EvalResult {
     public String getDiagnostics() {
         return diagnostics;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("EvalResult(")
+                .append("status=")
+                .append(status.name());
+        if (diagnostics != null){
+            sb.append(", diagnostics=").append(diagnostics);
+        }
+        sb.append(")");
+        return sb.toString();
+    }
 }

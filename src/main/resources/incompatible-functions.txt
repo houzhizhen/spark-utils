@@ -1,0 +1,2 @@
+infunc1
+infunc2
