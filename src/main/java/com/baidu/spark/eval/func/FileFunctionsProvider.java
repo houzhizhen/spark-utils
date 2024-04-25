@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -19,20 +21,20 @@ public class FileFunctionsProvider implements FunctionsProvider {
     @Override
     public ImmutableSet<String> getInCompatibleFunctions() {
         Set<String> funcSet = new HashSet<>();
-        File file = new File("incompatible-functions.txt");
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String str = null;
-                while((str = br.readLine()) != null){
-                    funcSet.add(str.trim().toLowerCase(Locale.ROOT));
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+        InputStream in = FileFunctionsProvider.class.getClassLoader().getResourceAsStream("incompatible-functions.txt");
+
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String str;
+            while((str = br.readLine()) != null){
+                funcSet.add(str.trim().toLowerCase(Locale.ROOT));
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return ImmutableSet.copyOf(funcSet);
     }
 }

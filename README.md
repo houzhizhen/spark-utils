@@ -135,7 +135,7 @@ spark-submit --master local\[1\] \
 ./spark-utils-1.0-SNAPSHOT.jar \
 --conf 'spark.query.to.evaluate=set a=b'
 ```
-打印 `SparkSQLEvaluate: result:EvalResult(status=SET, diagnosticsnull)`, 说明是一个 set.
+打印 `result:EvalResult(status=SET)`, 说明是一个 set.
 
 * 测试 add
 
@@ -145,7 +145,7 @@ spark-submit --master local\[1\] \
 ./spark-utils-1.0-SNAPSHOT.jar \
 --conf 'spark.query.to.evaluate=add jar a.jar'
 ```
-result:EvalResult(status=NOT_EVAL, diagnosticsnull)
+`result:EvalResult(status=ADD)`, 说明是一个 add.
 
 * 测试不能解析的SQL
 ```bash
@@ -154,3 +154,64 @@ spark-submit --master local\[1\] \
 ./spark-utils-1.0-SNAPSHOT.jar \
 --conf 'spark.query.to.evaluate=selec c1 from t1'
 ```
+执行结果
+```bash
+result:EvalResult(status=SYNTAX_INCOMPATIBLE, diagnostics=
+[PARSE_SYNTAX_ERROR] Syntax error at or near 'selec'.(line 1, pos 0)
+
+== SQL ==
+selec c1 from t1
+^^^
+)
+```
+
+* 不兼容的函数
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=select infunc1(c1) from t1'
+```
+执行结果
+`result:EvalResult(status=FUNCTION_INCOMPATIBLE, diagnostics=[infunc1])`
+
+* 多个不兼容的函数 
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=select infunc1(c1),infunc2(c2) from t1'
+```
+执行结果
+`result:EvalResult(status=FUNCTION_INCOMPATIBLE, diagnostics=[infunc2, infunc1]`
+
+* 系统支持的函数
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=select count(c1) from t1'
+```
+执行结果
+`result:EvalResult(status=SUCCESS)`
+
+* 系统不支持的函数
+
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=select notexistfunction(c1) from t1'
+```
+执行结果
+`result:EvalResult(status=FUNCTION_NOT_FOUND, diagnostics=[notexistfunction])`
+
+* 函数在 where 部分
+```bash
+spark-submit --master local\[1\] \
+ --class com.baidu.spark.eval.SparkSQLEvaluate \
+./spark-utils-1.0-SNAPSHOT.jar \
+--conf 'spark.query.to.evaluate=select * from t1 where notexistfunction(c1) > 0'
+```
+执行结果
+`result:EvalResult(status=FUNCTION_NOT_FOUND, diagnostics=[notexistfunction])`

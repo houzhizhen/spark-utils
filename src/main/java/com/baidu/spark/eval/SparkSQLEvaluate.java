@@ -26,6 +26,7 @@ public class SparkSQLEvaluate {
     public SparkSQLEvaluate(SparkSession session, ImmutableSet<String> incompatibleFuncs) {
         this.session = session;
         this.incompatibleFuncs = incompatibleFuncs;
+        LOG.info("incompatibleFuncs:" + incompatibleFuncs);
     }
 
     protected SparkSQLEvaluate() {
@@ -66,7 +67,7 @@ public class SparkSQLEvaluate {
             if (! session.catalog().functionExists(funcName)) {
                 notFoundFuncs.add(funcName);
             }
-            if (! this.incompatibleFuncs.contains(funcName)) {
+            if (this.incompatibleFuncs.contains(funcName)) {
                 inCompatibleFuncsSet.add(funcName);
             }
         }
