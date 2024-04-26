@@ -66,7 +66,7 @@ key 的类型是 long，value 的类型是长度为 1024 的随机数组。
 ```bash
 spark-submit --master local\[1\] \
   --class com.baidu.spark.history.FindRetryStages \
-  target/spark-utils-1.0-SNAPSHOT.jar \
+  ./spark-utils-1.0-SNAPSHOT.jar \
   --conf spark.history.server.address=http://localhost:8701 \
   --conf spark.app.check.min.duration.ms=10 \
   --conf minEndDate=2024-04-18T00:00:00Z \
@@ -76,8 +76,9 @@ spark-submit --master local\[1\] \
 find-yesterday-retry-stages.sh 
 ```bash
 #!/bin/bash
+cd cd $(dirname $0);
 export MONITOR_LOG_DIR=${MONITOR_LOG_DIR:-"/mnt/bmr/log/spark3/monitor"}
-export LOGFILE=${MONITOR_LOG_DIR}/`date +"%Y%m%d-%H%M%S"`-hive-metastore-monitor.log
+export LOGFILE=${MONITOR_LOG_DIR}/`date +"%Y%m%d-%H%M%S"`-spark-retry-stages-monitor.log
 
 echo MONITOR_LOG_DIR=${MONITOR_LOG_DIR} >> ${LOGFILE}
 if [ ! -d ${MONITOR_LOG_DIR} ]; then
@@ -96,7 +97,7 @@ spark-submit --master local\[1\] \
   --conf spark.history.server.address=http://bmr-master-4096a55-1:8701 \
   --conf spark.app.check.min.duration.ms=600000 \
   --conf minEndDate=${minEndDate} \
-  --conf maxEndDate=${maxEndDate} >> ${LOGFILE} 2>$1 
+  --conf maxEndDate=${maxEndDate} >> ${LOGFILE} 2>&1 
 
 ``` 
 crontab 

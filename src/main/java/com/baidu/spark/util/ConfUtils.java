@@ -1,4 +1,4 @@
-package com.baidu.spark.util.rand;
+package com.baidu.spark.util;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;

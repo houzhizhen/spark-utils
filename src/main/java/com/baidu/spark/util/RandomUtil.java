@@ -1,4 +1,4 @@
-package com.baidu.spark.util.rand;
+package com.baidu.spark.util;
 
 import java.util.Random;
 

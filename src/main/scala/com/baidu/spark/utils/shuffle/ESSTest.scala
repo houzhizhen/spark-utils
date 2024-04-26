@@ -1,6 +1,6 @@
 package com.baidu.spark.utils.shuffle
 
-import com.baidu.spark.util.rand.RandomUtil
+import com.baidu.spark.util.RandomUtil
 import org.apache.spark.sql.SparkSession
 
 object ESSTest {

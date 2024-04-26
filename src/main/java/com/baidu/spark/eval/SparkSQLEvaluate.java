@@ -1,7 +1,7 @@
 package com.baidu.spark.eval;
 
 import com.baidu.spark.eval.func.FileFunctionsProvider;
-import com.baidu.spark.util.rand.ConfUtils;
+import com.baidu.spark.util.ConfUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import org.apache.hadoop.conf.Configuration;

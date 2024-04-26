@@ -1,6 +1,6 @@
 package com.baidu.spark.history;
 
-import com.baidu.spark.util.rand.ConfUtils;
+import com.baidu.spark.util.ConfUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hadoop.conf.Configuration;
@@ -108,9 +108,9 @@ public class FindRetryStages {
                 JsonNode stage = stages.next();
                 int  attemptId = stage.get("attemptId").asInt();
                 if (attemptId != 0) {
-                    System.out.println("ERROR: application" + id + " stages has retries" );
+                    System.out.println("ERROR: " + id + " stages has retries" );
                 } else {
-                    System.out.println("INFO: application" + id + " stages has no retries" );
+                    System.out.println("INFO: " + id + " stages has no retries" );
                 }
             }
         }
